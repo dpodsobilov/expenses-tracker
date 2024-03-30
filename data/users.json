@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Denis",
+      "email": "denis@gmail.com",
+      "password": "qwerty123",
+      "expenses": [
+        {
+          "id": "1",
+          "title": "Чай",
+          "date": "",
+          "amount": "300"
+        },
+        {
+          "id": "2",
+          "title": "Гантели",
+          "date": "",
+          "amount": "5000"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Max",
+      "email": "max@gmail.com",
+      "password": "max1234",
+      "expenses": [
+        {
+          "id": "1",
+          "title": "Благотворительность",
+          "date": "",
+          "amount": "2000"
+        }
+      ]
+    },
+    {
+      "id": "1f14",
+      "email": "asd@asdlkj",
+      "name": "den",
+      "password": "asdlk12",
+      "expenses": []
+    },
+    {
+      "id": "644f",
+      "email": "den@eden",
+      "name": "Den",
+      "password": "123",
+      "expenses": []
+    }
+  ]
+}

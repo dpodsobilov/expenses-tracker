@@ -1,0 +1,9 @@
+.app {
+  position: relative;
+  height: 100vh;
+  padding: 2.4rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
