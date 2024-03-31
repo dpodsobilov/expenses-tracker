@@ -47,6 +47,12 @@
           "date": "2024-03-31T14:13:56.983Z",
           "amount": 300,
           "title": "asdasd"
+        },
+        {
+          "id": "127",
+          "date": "2024-03-31T20:03:14.179Z",
+          "amount": 300,
+          "title": "asdasd"
         }
       ]
     },
@@ -114,6 +120,13 @@
           "title": "asdasd"
         }
       ]
+    },
+    {
+      "id": "3e56",
+      "name": "Кирилл",
+      "email": "kirill@dfjsdf",
+      "password": "dlkfj",
+      "expenses": []
     }
   ]
 }

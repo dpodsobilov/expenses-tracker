@@ -5,6 +5,7 @@ import { useAppDispatch } from "../../hooks/hook";
 import { register } from "../../features/authentication/authSlice";
 import { IUser } from "../../features/user/userSlice";
 import useAuth from "../../hooks/useAuth";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
 export const Register: FC = () => {
   // если пользователь вошел, то редикректить в профиль
@@ -36,44 +37,65 @@ export const Register: FC = () => {
   }
 
   return (
-    <div className={styles.box}>
-      <h2>Регистрация</h2>
-      <form onSubmit={handleSubmitRegister} className={styles.form}>
-        <label htmlFor="name">Имя:</label>
-        <input
-          type="name"
-          id="name"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+    <Container sx={{ width: 500 }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Typography variant="h4" component="h2" sx={{ mt: 3 }}>
+          Регистрация
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmitRegister}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Имя"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <label htmlFor="password">Пароль:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button>Регистрация &rarr;</button>
-        <Link to="/login" className={styles.link}>
-          <span>Есть аккаунт? Войти</span>
-        </Link>
-      </form>
-    </div>
+          <Button type="submit" variant="contained" sx={{ mb: 2 }}>
+            Регистрация &rarr;
+          </Button>
+          <Link to="/login">
+            <Typography component="span" sx={{ opacity: ".5" }}>
+              Есть аккаунт? Войти
+            </Typography>
+          </Link>
+        </Box>
+      </Box>
+    </Container>
   );
 };

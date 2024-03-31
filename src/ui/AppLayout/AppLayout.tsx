@@ -1,10 +1,14 @@
 import { Outlet } from "react-router-dom";
-import styles from "./AppLayout.module.css";
+import Container from "@mui/material/Container";
+import { Header } from "../Header";
 
 export default function AppLayout() {
   return (
-    <main className={styles.app}>
-      <Outlet />
+    <main>
+      <Header />
+      <Container>
+        <Outlet />
+      </Container>
     </main>
   );
 }

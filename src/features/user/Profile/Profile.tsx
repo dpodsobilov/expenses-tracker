@@ -3,10 +3,10 @@ import { FC, useEffect, useState } from "react";
 import styles from "./Profile.module.css";
 import { useAppDispatch, useAppSelector } from "../../../hooks/hook";
 import { ExpenseItem } from "../../expense/ExpenseItem/ExpenseItem";
-import { logout } from "../../authentication/authSlice";
 import useAuth from "../../../hooks/useAuth";
 import { addExpense, clearExpenses, getExpenses, IExpense } from "../userSlice";
 import useExpenses from "../../../hooks/useExpenses";
+import { Box, List, Typography } from "@mui/material";
 
 export const Profile: FC = () => {
   const dispatch = useAppDispatch();
@@ -27,11 +27,6 @@ export const Profile: FC = () => {
     },
     [expenses]
   );
-
-  function handleClickLogout() {
-    dispatch(logout());
-    dispatch(clearExpenses());
-  }
 
   function addTestExpense() {
     const expense: IExpense = {
@@ -56,11 +51,13 @@ export const Profile: FC = () => {
   }
 
   return (
-    <div className={styles.profile}>
-      <button onClick={handleClickLogout}>Выйти</button>
-      <h2>Привет, {userName}!</h2>
-      <div>
-        <div className={styles.expenses}>
+    <Box>
+      <Typography variant="h4" component="p">
+        Привет, {userName}!
+      </Typography>
+      <Box>
+        <Box className={styles.expenses}>
+          <Box>Фильтрация + справа добавление расхода</Box>
           {/* фильтры 
           1. период
           2. описание
@@ -68,20 +65,18 @@ export const Profile: FC = () => {
           */}
           {/* кнопка "добавить расход" */}
 
-          <div className={styles.filtersBox}></div>
-          <div className={styles.content}>
-            <ul>
+          <Box className={styles.content}>
+            <List sx={{ width: 500 }}>
               {expansesList.map((expense) => (
                 <ExpenseItem expense={expense} key={expense.id} />
               ))}
-            </ul>
-          </div>
-        </div>
-        {/* список расходов */}
+            </List>
+          </Box>
+        </Box>
         <button onClick={addTestExpense}>ADD TEST EXPENSE</button>
         <button onClick={sortByDescSum}>by desc</button>
         <button onClick={sortByAscSum}>by asc</button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };

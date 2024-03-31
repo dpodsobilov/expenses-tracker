@@ -6,6 +6,8 @@ import { IUser } from "../../features/user/userSlice";
 import { login } from "../../features/authentication/authSlice";
 import useAuth from "../../hooks/useAuth";
 
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
+
 export const Login: FC = () => {
   // если пользователь вошел, то редикректить в профиль
   const [email, setEmail] = useState<string>("");
@@ -35,34 +37,54 @@ export const Login: FC = () => {
   }
 
   return (
-    <div className={styles.box}>
-      <h2>Авторизация</h2>
-      <form onSubmit={handleSubmitLogin} className={styles.form}>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+    <Container sx={{ width: 500 }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Typography variant="h4" component="h2" sx={{ mt: 3 }}>
+          Авторизация
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmitLogin}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <label htmlFor="password">Пароль:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button>Войти &rarr;</button>
-        <Link to="/register" className={styles.link}>
-          <span>Нет аккаунта? Зарегистрироваться</span>
-        </Link>
-      </form>
-    </div>
+          <Button type="submit" variant="contained" sx={{ mb: 2 }}>
+            Войти &rarr;
+          </Button>
+          <Link to="/register">
+            <Typography component="span" sx={{ opacity: ".5" }}>
+              Нет аккаунта? Зарегистрироваться
+            </Typography>
+          </Link>
+        </Box>
+      </Box>
+    </Container>
   );
 };
