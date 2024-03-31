@@ -1,11 +1,21 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../user/userSlice";
 import axios from "axios";
+import { RootState } from "../../store/store";
+// import { BASE_URL } from "../../store/store";
 
+export const BASE_URL: string = "http://localhost:9000";
 interface IAuth {
-  currentUser: IUser | null;
+  currentUser: IUserAuth | null;
   isAuth: boolean;
   isLoading: boolean;
+}
+
+export interface IUserAuth {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
 }
 
 const initialState: IAuth = {
@@ -14,9 +24,7 @@ const initialState: IAuth = {
   isLoading: false,
 };
 
-const BASE_URL: string = "http://localhost:9000";
-
-export const register = createAsyncThunk<IUser, IUser>(
+export const register = createAsyncThunk<IUserAuth, IUser>(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
@@ -32,13 +40,19 @@ export const register = createAsyncThunk<IUser, IUser>(
       if (user) throw new Error("Пользователь уже существует!");
 
       const { data } = await axios.post<IUser>(`${BASE_URL}/users`, {
-        email,
         name,
+        email,
         password,
         expenses,
       });
 
-      return data as IUser;
+      const userAuth: IUserAuth = {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      };
+      return userAuth;
     } catch (err) {
       throw rejectWithValue(err);
     }
@@ -59,25 +73,14 @@ export const login = createAsyncThunk(
       if (user.password !== userData.password)
         throw new Error("Неверный пароль!");
 
-      return user;
+      const { id, name, email, password } = user;
+
+      return { id, name, email, password };
     } catch (err) {
       throw rejectWithValue(err);
     }
   }
 );
-
-// export const getUsers = createAsyncThunk<IUser[]>(
-//   "auth/users",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const { data } = await axios.get<IUser[]>(`${BASE_URL}/users`);
-
-//       return data;
-//     } catch (err) {
-//       throw rejectWithValue(err);
-//     }
-//   }
-// );
 
 const authSlice = createSlice({
   name: "auth",
@@ -90,24 +93,17 @@ const authSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      // .addCase(getUsers.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(getUsers.fulfilled, (state, action: PayloadAction<IUser[]>) => {
-      //   state.isLoading = false;
-      //   state.users = action.payload;
-      // })
-      // .addCase(getUsers.rejected, (state) => {
-      //   state.isLoading = false;
-      // })
       .addCase(register.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(register.fulfilled, (state, action: PayloadAction<IUser>) => {
-        state.isLoading = false;
-        state.isAuth = true;
-        state.currentUser = { ...action.payload };
-      })
+      .addCase(
+        register.fulfilled,
+        (state, action: PayloadAction<IUserAuth>) => {
+          state.isLoading = false;
+          state.isAuth = true;
+          state.currentUser = { ...action.payload };
+        }
+      )
       .addCase(register.rejected, (state) => {
         state.isLoading = false;
         state.isAuth = false;
@@ -115,7 +111,7 @@ const authSlice = createSlice({
       .addCase(login.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(login.fulfilled, (state, action: PayloadAction<IUser>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<IUserAuth>) => {
         state.isLoading = false;
         state.isAuth = true;
         state.currentUser = { ...action.payload };
@@ -127,23 +123,27 @@ const authSlice = createSlice({
   },
 });
 
-export const authMiddleware =
-  (store: unknown) =>
-  (next: (action: unknown) => void) =>
-  (action: PayloadAction<IUser>) => {
-    // const res = next(action);
-    console.log("action type is ", action.type);
+//export const getUserId = (state: RootState) => state.auth.currentUser?.id;
 
-    if (action.type === "auth/login/fulfilled") {
-      localStorage.setItem("user", JSON.stringify(action.payload));
-      console.log(action.payload);
-    }
-
-    if (action.type === "auth/logout") {
-      localStorage.removeItem("user");
-    }
-
-    return next(action);
-  };
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
+
+// export const authMiddleware =
+//   (store: unknown) =>
+//   (next: (action: unknown) => void) =>
+//   (action: PayloadAction<IUser>) => {
+//     // const res = next(action);
+//     console.log("action type is ", action.type);
+
+//     if (action.type === "auth/login/fulfilled") {
+//       localStorage.setItem("user", JSON.stringify(action.payload));
+//       console.log(action.payload);
+//     }
+
+//     if (action.type === "auth/logout") {
+//       localStorage.removeItem("user");
+//     }
+
+//     return next(action);
+//   };

@@ -21,7 +21,6 @@ export const Login: FC = () => {
     },
     [isAuth, navigate]
   );
-  // dispatch(getUsers());
 
   function handleSubmitLogin(e: React.FormEvent) {
     e.preventDefault();

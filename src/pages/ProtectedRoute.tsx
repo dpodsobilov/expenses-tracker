@@ -7,12 +7,12 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: FC<ProtectedRouteProps> = ({ children }) => {
-  const isAuth = useAuth();
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
 
   useEffect(
     function () {
-      if (!isAuth) navigate("/");
+      if (!isAuth) navigate("/login");
     },
     [isAuth, navigate]
   );

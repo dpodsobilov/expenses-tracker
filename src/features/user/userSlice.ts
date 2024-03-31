@@ -1,9 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URL } from "../authentication/authSlice";
 
 export interface IExpense {
-  id: number | null;
+  id: string;
   title: string;
-  date: Date;
+  date: string;
   amount: number;
 }
 
@@ -15,64 +17,83 @@ export interface IUser {
   expenses: IExpense[];
 }
 
-const initialState: IUser = {
-  id: "",
-  name: "",
-  email: "",
-  password: "",
+export interface IUserExpense {
+  expenses: IExpense[];
+}
+
+export interface IExpenseWithId {
+  userId: string;
+  expense: IExpense;
+}
+
+const initialState: IUserExpense = {
   expenses: [],
 };
+
+export const getExpenses = createAsyncThunk<IExpense[], string>(
+  "user/getExpanses",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get<IUser>(`${BASE_URL}/users/${userId}`);
+      const { expenses } = data;
+
+      return expenses;
+    } catch (err) {
+      throw rejectWithValue(err);
+    }
+  }
+);
+
+export const addExpense = createAsyncThunk<IExpense, IExpenseWithId>(
+  "user/addExpense",
+  async ({ userId, expense }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get<IUser>(`${BASE_URL}/users/${userId}`);
+      const { expenses } = data;
+
+      const newId =
+        expenses.reduce(
+          (max, expense) => (+expense.id > max ? +expense.id : max),
+          0
+        ) + 1;
+      expense.id = newId.toString();
+
+      await axios.patch(`${BASE_URL}/users/${userId}`, {
+        expenses: [...data.expenses, expense],
+      });
+
+      return expense;
+    } catch (err) {
+      throw rejectWithValue(err);
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    createUser(state, action: PayloadAction<IUser>) {
-      state.id = action.payload.id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.password = action.payload.password;
-      state.expenses = action.payload.expenses;
-
-      localStorage.setItem("user", JSON.stringify(state));
+    clearExpenses(state) {
+      state.expenses = [];
     },
-    getUser(state) {
-      const localStorageRes = localStorage.getItem("user");
-      if (localStorageRes !== null) {
-        const user: IUser = JSON.parse(localStorageRes);
-
-        if (user !== null) {
-          state.id = user.id;
-          state.name = user.name;
-          state.email = user.email;
-          state.password = user.password;
-          state.expenses = user.expenses;
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(
+        getExpenses.fulfilled,
+        (state, action: PayloadAction<IExpense[]>) => {
+          state.expenses = action.payload;
         }
-      }
-
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.password = "";
-      state.expenses = [];
-    },
-    logout(state) {
-      state.id = "";
-      state.name = "";
-      state.email = "";
-      state.password = "";
-      state.expenses = [];
-
-      localStorage.removeItem("user");
-    },
-    updateExpense(state, action: PayloadAction<IExpense>) {
-      if (state.email) {
-        state.expenses.push(action.payload);
-      }
-    },
+      )
+      .addCase(
+        addExpense.fulfilled,
+        (state, action: PayloadAction<IExpense>) => {
+          state.expenses.push(action.payload);
+        }
+      );
   },
 });
 
-export const { createUser, logout } = userSlice.actions;
+export const { clearExpenses } = userSlice.actions;
 
 export default userSlice.reducer;

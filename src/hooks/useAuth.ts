@@ -1,29 +1,13 @@
-import { useEffect } from "react";
-import { IUser } from "../features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "./hook";
-import { useLocalStorageUser } from "./useLocalStorageUser";
-import { login } from "../features/authentication/authSlice";
+import { useAppSelector } from "./hook";
 
 function useAuth() {
   const { isAuth, currentUser } = useAppSelector((state) => state.auth);
-  // const [user] = useLocalStorageUser(currentUser as IUser);
-
-  const dispatch = useAppDispatch();
-
-  // useEffect(
-  //   function () {
-  //     const user = localStorage.getItem("user");
-
-  //     if (user) {
-  //       dispatch(login(JSON.parse(user)));
-  //     }
-  //   },
-  //   [dispatch]
-  // );
-
+  const userId = currentUser?.id;
+  const userName = currentUser?.name;
   return {
     isAuth,
-    // user,
+    userId,
+    userName,
   };
 }
 

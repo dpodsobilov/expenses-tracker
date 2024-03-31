@@ -17,6 +17,36 @@
           "title": "Гантели",
           "date": "",
           "amount": "5000"
+        },
+        {
+          "id": "123",
+          "date": "2024-03-31T12:51:02.787Z",
+          "amount": 200,
+          "title": "asdasd"
+        },
+        {
+          "id": "",
+          "date": "2024-03-31T12:51:44.670Z",
+          "amount": 250,
+          "title": "asdasd"
+        },
+        {
+          "id": "124",
+          "date": "2024-03-31T13:04:51.630Z",
+          "amount": 100,
+          "title": "asdasd"
+        },
+        {
+          "id": "125",
+          "date": "2024-03-31T14:13:42.819Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "126",
+          "date": "2024-03-31T14:13:56.983Z",
+          "amount": 300,
+          "title": "asdasd"
         }
       ]
     },
@@ -46,7 +76,44 @@
       "email": "den@eden",
       "name": "Den",
       "password": "123",
-      "expenses": []
+      "expenses": [
+        {
+          "id": "1",
+          "date": "2024-03-31T13:07:02.150Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "2",
+          "date": "2024-03-31T13:11:44.934Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "3",
+          "date": "2024-03-31T13:13:53.799Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "4",
+          "date": "2024-03-31T14:00:29.417Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "5",
+          "date": "2024-03-31T14:03:06.443Z",
+          "amount": 300,
+          "title": "asdasd"
+        },
+        {
+          "id": "6",
+          "date": "2024-03-31T14:03:07.820Z",
+          "amount": 300,
+          "title": "asdasd"
+        }
+      ]
     }
   ]
 }
