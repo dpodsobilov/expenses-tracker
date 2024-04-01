@@ -1,3 +1,4 @@
+import React, { FC, useState } from "react";
 import {
   Box,
   Button,
@@ -6,11 +7,10 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import React, { FC, useState } from "react";
-import { addExpense, IExpense } from "../../user/userSlice";
-import { useAppDispatch } from "../../../hooks/hook";
-import useAuth from "../../../hooks/useAuth";
 import { DatePicker } from "@mui/x-date-pickers";
+import { addExpense, IExpense } from "../user/userSlice";
+import { useAppDispatch } from "../../hooks/hook";
+import useAuth from "../../hooks/useAuth";
 
 interface NewExpenseProps {
   isOpen: boolean;
@@ -35,9 +35,11 @@ export const NewExpense: FC<NewExpenseProps> = ({ isOpen, onClose }) => {
       date: date.toISOString(),
       amount,
     };
-    // onAdd(expense);
     if (userId) dispatch(addExpense({ userId, expense }));
     onClose(true);
+    setTitle("");
+    setDate(new Date());
+    setAmount(0);
   }
 
   return (

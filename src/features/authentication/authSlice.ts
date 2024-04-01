@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../user/userSlice";
 import axios from "axios";
-import { RootState } from "../../store/store";
-// import { BASE_URL } from "../../store/store";
 
 export const BASE_URL: string = "http://localhost:9000";
+
 interface IAuth {
   currentUser: IUserAuth | null;
   isAuth: boolean;
@@ -123,27 +122,6 @@ const authSlice = createSlice({
   },
 });
 
-//export const getUserId = (state: RootState) => state.auth.currentUser?.id;
-
 export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
-
-// export const authMiddleware =
-//   (store: unknown) =>
-//   (next: (action: unknown) => void) =>
-//   (action: PayloadAction<IUser>) => {
-//     // const res = next(action);
-//     console.log("action type is ", action.type);
-
-//     if (action.type === "auth/login/fulfilled") {
-//       localStorage.setItem("user", JSON.stringify(action.payload));
-//       console.log(action.payload);
-//     }
-
-//     if (action.type === "auth/logout") {
-//       localStorage.removeItem("user");
-//     }
-
-//     return next(action);
-//   };
