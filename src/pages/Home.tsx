@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 
 export const Home: FC = () => {
   const { isAuth } = useAuth();

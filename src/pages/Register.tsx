@@ -1,15 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./Login.module.css";
-import { useAppDispatch } from "../../hooks/hook";
-import { IUser } from "../../features/user/userSlice";
-import { login } from "../../features/authentication/authSlice";
-import useAuth from "../../hooks/useAuth";
-
+import { useAppDispatch } from "../hooks/hook";
+import { register } from "../features/authentication/authSlice";
+import { IUser } from "../features/user/userSlice";
+import useAuth from "../hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 
-export const Login: FC = () => {
+export const Register: FC = () => {
   // если пользователь вошел, то редикректить в профиль
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -24,33 +23,44 @@ export const Login: FC = () => {
     [isAuth, navigate]
   );
 
-  function handleSubmitLogin(e: React.FormEvent) {
+  function handleSubmitRegister(e: React.FormEvent) {
     e.preventDefault();
     const user: IUser = {
       email,
       password,
-      name: "",
+      name,
       expenses: [],
       id: "",
     };
-    dispatch(login({ ...user }));
+    dispatch(register({ ...user }));
   }
 
   return (
     <Container sx={{ width: 500 }}>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Typography variant="h4" component="h2" sx={{ mt: 3 }}>
-          Авторизация
+          Регистрация
         </Typography>
         <Box
           component="form"
-          onSubmit={handleSubmitLogin}
+          onSubmit={handleSubmitRegister}
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="name"
+            label="Имя"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
           <TextField
             margin="normal"
             required
@@ -76,11 +86,11 @@ export const Login: FC = () => {
           />
 
           <Button type="submit" variant="contained" sx={{ mb: 2 }}>
-            Войти &rarr;
+            Регистрация &rarr;
           </Button>
-          <Link to="/register">
+          <Link to="/login">
             <Typography component="span" sx={{ opacity: ".5" }}>
-              Нет аккаунта? Зарегистрироваться
+              Есть аккаунт? Войти
             </Typography>
           </Link>
         </Box>

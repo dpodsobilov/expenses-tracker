@@ -1,7 +1,8 @@
 import { FC } from "react";
-import { IExpense } from "../../user/userSlice";
+import { IExpense } from "../user/userSlice";
 
 import { ListItem, ListItemText, Typography } from "@mui/material";
+import { formatDate } from "../../utils/formatDate";
 
 interface ExpenseItemProps {
   expense: IExpense;
@@ -9,12 +10,11 @@ interface ExpenseItemProps {
 
 export const ExpenseItem: FC<ExpenseItemProps> = ({ expense }) => {
   return (
-    // secondaryAction={<ListItemText primary={expense.amount}}/>
     <ListItem>
-      {/* <p>{expense.title}</p>
-      <p>{expense.date.toString()}</p>
-      <p>{expense.amount} &#8381;</p> */}
-      <ListItemText primary={expense.title} secondary={expense.date} />
+      <ListItemText
+        primary={expense.title}
+        secondary={expense.date ? formatDate(expense.date) : ""}
+      />
       <Typography>{expense.amount} &#8381;</Typography>
     </ListItem>
   );

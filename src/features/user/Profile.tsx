@@ -1,18 +1,19 @@
 import { FC, useEffect, useState } from "react";
 
-import styles from "./Profile.module.css";
-import { useAppDispatch, useAppSelector } from "../../../hooks/hook";
-import { ExpenseItem } from "../../expense/ExpenseItem/ExpenseItem";
-import useAuth from "../../../hooks/useAuth";
-import { addExpense, clearExpenses, getExpenses, IExpense } from "../userSlice";
-import useExpenses from "../../../hooks/useExpenses";
-import { Box, List, Typography } from "@mui/material";
+import { useAppDispatch } from "../../hooks/hook";
+import { ExpenseItem } from "../expense/ExpenseItem";
+import useAuth from "../../hooks/useAuth";
+import { getExpenses, IExpense } from "./userSlice";
+import useExpenses from "../../hooks/useExpenses";
+import { Box, Button, List, Typography } from "@mui/material";
+import { NewExpense } from "../expense/NewExpense.tsx/NewExpense";
 
 export const Profile: FC = () => {
   const dispatch = useAppDispatch();
   const { userId, userName } = useAuth();
   const { expenses } = useExpenses();
   const [expansesList, setExpansesList] = useState<IExpense[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   useEffect(
     function () {
@@ -23,20 +24,18 @@ export const Profile: FC = () => {
 
   useEffect(
     function () {
-      if (expenses) setExpansesList(expenses);
+      if (expenses) {
+        const sortedExpenses = expenses.slice().sort((a, b) => {
+          const dat1 = new Date(a.date).getTime();
+          const dat2 = new Date(b.date).getTime();
+
+          return dat2 - dat1;
+        });
+        setExpansesList(sortedExpenses);
+      }
     },
     [expenses]
   );
-
-  function addTestExpense() {
-    const expense: IExpense = {
-      id: "",
-      date: new Date().toISOString(),
-      amount: 300,
-      title: "asdasd",
-    };
-    if (userId) dispatch(addExpense({ userId, expense }));
-  }
 
   function sortByAscSum() {
     setExpansesList((expenses) =>
@@ -50,13 +49,17 @@ export const Profile: FC = () => {
     );
   }
 
+  function handleCloseDialog() {
+    setIsDialogOpen(false);
+  }
+
   return (
     <Box>
       <Typography variant="h4" component="p">
         Привет, {userName}!
       </Typography>
       <Box>
-        <Box className={styles.expenses}>
+        <Box>
           <Box>Фильтрация + справа добавление расхода</Box>
           {/* фильтры 
           1. период
@@ -64,8 +67,8 @@ export const Profile: FC = () => {
           3. диапазон суммы
           */}
           {/* кнопка "добавить расход" */}
-
-          <Box className={styles.content}>
+          <Button onClick={() => setIsDialogOpen(true)}>Добавить расход</Button>
+          <Box>
             <List sx={{ width: 500 }}>
               {expansesList.map((expense) => (
                 <ExpenseItem expense={expense} key={expense.id} />
@@ -73,10 +76,10 @@ export const Profile: FC = () => {
             </List>
           </Box>
         </Box>
-        <button onClick={addTestExpense}>ADD TEST EXPENSE</button>
         <button onClick={sortByDescSum}>by desc</button>
         <button onClick={sortByAscSum}>by asc</button>
       </Box>
+      <NewExpense isOpen={isDialogOpen} onClose={handleCloseDialog} />
     </Box>
   );
 };
