@@ -1,19 +1,19 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hook";
-import { IUser } from "../features/user/userSlice";
-import { login } from "../features/authentication/authSlice";
+import { IUser } from "../store/slices/userSlice";
+import { login } from "../store/slices/authSlice";
 import useAuth from "../hooks/useAuth";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { useInput } from "../hooks/formHooks";
 
 export const Login: FC = () => {
-  // если пользователь вошел, то редикректить в профиль
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const email = useInput("", { isEmpty: true, minLength: 6, isEmail: true });
+  const password = useInput("", { isEmpty: true, minLength: 4, maxLength: 12 });
 
   const dispatch = useAppDispatch();
-  const { isAuth } = useAuth();
+  const { isAuth, error } = useAuth();
   const navigate = useNavigate();
 
   useEffect(
@@ -26,8 +26,8 @@ export const Login: FC = () => {
   function handleSubmitLogin(e: React.FormEvent) {
     e.preventDefault();
     const user: IUser = {
-      email,
-      password,
+      email: email.value,
+      password: password.value,
       name: "",
       expenses: [],
       id: "",
@@ -58,9 +58,17 @@ export const Login: FC = () => {
             label="Email"
             name="email"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={email.value}
+            onChange={(e) => email.onChange(e)}
+            onBlur={(e) => email.onBlur(e)}
           />
+          {email.isDirty &&
+            (email.emailError || email.minLengthError || email.isEmpty) && (
+              <Typography variant="subtitle1" color="red">
+                {email.error}
+              </Typography>
+            )}
+
           <TextField
             margin="normal"
             required
@@ -70,13 +78,31 @@ export const Login: FC = () => {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={password.value}
+            onChange={(e) => password.onChange(e)}
+            onBlur={(e) => password.onBlur(e)}
           />
-
-          <Button type="submit" variant="contained" sx={{ mb: 2 }}>
+          {password.isDirty &&
+            (password.minLengthError ||
+              password.minLengthError ||
+              password.isEmpty) && (
+              <Typography variant="subtitle1" color="red">
+                {password.error}
+              </Typography>
+            )}
+          <Button
+            disabled={!email.inputValid || !password.inputValid}
+            type="submit"
+            variant="contained"
+            sx={{ mb: 2 }}
+          >
             Войти &rarr;
           </Button>
+          {error && (
+            <Typography variant="subtitle1" color="red">
+              {error}
+            </Typography>
+          )}
           <Link to="/register">
             <Typography component="span" sx={{ opacity: ".5" }}>
               Нет аккаунта? Зарегистрироваться

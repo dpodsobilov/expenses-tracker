@@ -71,17 +71,10 @@
       ]
     },
     {
-      "id": "1f14",
-      "email": "asd@asdlkj",
-      "name": "den",
-      "password": "asdlk12",
-      "expenses": []
-    },
-    {
       "id": "644f",
-      "email": "den@eden",
+      "email": "den@eden.ru",
       "name": "Den",
-      "password": "123",
+      "password": "1234",
       "expenses": [
         {
           "id": "2",
@@ -118,27 +111,6 @@
           "title": "Цветы",
           "date": "2024-03-28T06:04:13.000Z",
           "amount": 2500
-        }
-      ]
-    },
-    {
-      "id": "3e56",
-      "name": "Кирилл",
-      "email": "kirill@dfjsdf",
-      "password": "dlkfj",
-      "expenses": []
-    },
-    {
-      "id": "de4b",
-      "name": "Олег",
-      "email": "oleg@oleg",
-      "password": "123123",
-      "expenses": [
-        {
-          "id": "1",
-          "title": "Цветы",
-          "date": "2024-03-16T09:37:59.000Z",
-          "amount": 4900
         }
       ]
     }

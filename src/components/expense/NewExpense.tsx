@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { addExpense, IExpense } from "../user/userSlice";
+import { addExpense, IExpense } from "../../store/slices/userSlice";
 import { useAppDispatch } from "../../hooks/hook";
 import useAuth from "../../hooks/useAuth";
 

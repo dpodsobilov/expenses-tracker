@@ -5,14 +5,13 @@ import { ru } from "date-fns/locale";
 import { ruRU } from "@mui/x-date-pickers/locales";
 import { createTheme, ThemeProvider } from "@mui/material";
 
-import AppLayout from "./ui/AppLayout/AppLayout";
+import AppLayout from "./ui/AppLayout";
 import Error from "./ui/Error/Error";
 
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { Login } from "./pages/Login";
-import { Profile } from "./features/user/Profile";
+import { Profile } from "./pages/Profile";
 import { Home } from "./pages/Home";
-import { CreateExpanse } from "./pages/CreateExpanse";
 import { Register } from "./pages/Register";
 
 const theme = createTheme({}, ruRU);
@@ -44,14 +43,6 @@ const router = createBrowserRouter([
             >
               <Profile />
             </LocalizationProvider>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/expense/new",
-        element: (
-          <ProtectedRoute>
-            <CreateExpanse />
           </ProtectedRoute>
         ),
       },

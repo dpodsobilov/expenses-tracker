@@ -6,8 +6,9 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { FC, useCallback, useEffect, useState } from "react";
-import { IExpense } from "./userSlice";
+import { IExpense } from "../../store/slices/userSlice";
 import useExpenses from "../../hooks/useExpenses";
+import { useSearchParams } from "react-router-dom";
 
 interface SortingProps {
   onSortList: React.Dispatch<React.SetStateAction<IExpense[]>>;
@@ -21,14 +22,19 @@ export const Sorting: FC<SortingProps> = ({
   expensesList,
 }) => {
   const { expenses: initialExpenses } = useExpenses();
-  const [sortType, setSortType] = useState<string>("byDefault");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [sortType, setSortType] = useState<string>(
+    () => searchParams.get("sortBy") || "byDefault"
+  );
+
+  // const sortBy = searchParams.get("sortBy") || "";
 
   const sortByDefault = useCallback(() => {
     const sortedExpenses = expensesList.slice().sort((a, b) => {
-      const dat1 = new Date(a.date).getTime();
-      const dat2 = new Date(b.date).getTime();
+      const date1 = new Date(a.date).getTime();
+      const date2 = new Date(b.date).getTime();
 
-      return dat2 - dat1;
+      return date2 - date1;
     });
     onSortList(sortedExpenses);
     onLoading(false);
@@ -44,6 +50,9 @@ export const Sorting: FC<SortingProps> = ({
 
   function handleSorting(e: SelectChangeEvent) {
     setSortType(e.target.value);
+    searchParams.set("sortBy", e.target.value);
+    setSearchParams(searchParams);
+
     switch (e.target.value) {
       case "byAsc":
         onSortList((expenses) =>

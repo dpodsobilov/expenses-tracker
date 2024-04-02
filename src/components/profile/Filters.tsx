@@ -1,7 +1,7 @@
 import { Button, InputLabel, ListItem, Menu, TextField } from "@mui/material";
 import { ClearIcon, DatePicker } from "@mui/x-date-pickers";
 import React, { FC, useEffect, useState } from "react";
-import { IExpense } from "./userSlice";
+import { IExpense } from "../../store/slices/userSlice";
 import useExpenses from "../../hooks/useExpenses";
 
 interface FiltersProps {
@@ -128,7 +128,7 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
         >
           <TextField
             margin="normal"
-            // fullWidth
+            fullWidth
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             id="filter-min-amount"
@@ -142,7 +142,6 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
 
           <TextField
             margin="normal"
-            // fullWidth
             type="number"
             InputProps={{ inputProps: { min: `${minAmount}` } }}
             id="filter-max-amount"

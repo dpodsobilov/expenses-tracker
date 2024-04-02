@@ -1,15 +1,15 @@
 import { FC, useEffect, useState } from "react";
 import { Box, Button, List, Typography } from "@mui/material";
 
-import { getExpenses, IExpense } from "./userSlice";
-import { useAppDispatch } from "../../hooks/hook";
-import useAuth from "../../hooks/useAuth";
+import { getExpenses, IExpense } from "../store/slices/userSlice";
+import { useAppDispatch } from "../hooks/hook";
+import useAuth from "../hooks/useAuth";
 
-import { ExpenseItem } from "../expense/ExpenseItem";
-import { NewExpense } from "../expense/NewExpense";
-import { Filters } from "./Filters";
-import { Sorting } from "./Sorting";
-import useExpenses from "../../hooks/useExpenses";
+import { ExpenseItem } from "../components/expense/ExpenseItem";
+import { NewExpense } from "../components/expense/NewExpense";
+import { Filters } from "../components/profile/Filters";
+import { Sorting } from "../components/profile/Sorting";
+import useExpenses from "../hooks/useExpenses";
 
 export const Profile: FC = () => {
   const dispatch = useAppDispatch();

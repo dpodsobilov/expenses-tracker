@@ -3,8 +3,8 @@ import { FC } from "react";
 import useAuth from "../hooks/useAuth";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hook";
-import { clearExpenses } from "../features/user/userSlice";
-import { logout } from "../features/authentication/authSlice";
+import { clearExpenses } from "../store/slices/userSlice";
+import { logout } from "../store/slices/authSlice";
 import { LinkStyled } from "./LinkStyled";
 
 export const Header: FC = () => {

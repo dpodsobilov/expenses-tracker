@@ -1,5 +1,10 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUser } from "../user/userSlice";
+import {
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  UnknownAction,
+} from "@reduxjs/toolkit";
+import { IUser } from "./userSlice";
 import axios from "axios";
 
 export const BASE_URL: string = "http://localhost:9000";
@@ -8,6 +13,7 @@ interface IAuth {
   currentUser: IUserAuth | null;
   isAuth: boolean;
   isLoading: boolean;
+  error: string;
 }
 
 export interface IUserAuth {
@@ -21,7 +27,12 @@ const initialState: IAuth = {
   currentUser: null,
   isAuth: false,
   isLoading: false,
+  error: "",
 };
+
+interface IAuthError {
+  message: string;
+}
 
 export const register = createAsyncThunk<IUserAuth, IUser>(
   "auth/register",
@@ -88,6 +99,10 @@ const authSlice = createSlice({
     logout(state) {
       state.isAuth = false;
       state.currentUser = null;
+      state.error = "";
+    },
+    clearError(state) {
+      state.error = "";
     },
   },
   extraReducers(builder) {
@@ -101,6 +116,7 @@ const authSlice = createSlice({
           state.isLoading = false;
           state.isAuth = true;
           state.currentUser = { ...action.payload };
+          state.error = "";
         }
       )
       .addCase(register.rejected, (state) => {
@@ -114,14 +130,22 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuth = true;
         state.currentUser = { ...action.payload };
+        state.error = "";
       })
       .addCase(login.rejected, (state) => {
         state.isLoading = false;
         state.isAuth = false;
+      })
+      .addMatcher(isError, (state, action: PayloadAction<IAuthError>) => {
+        state.error = action.payload.message;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearError } = authSlice.actions;
 
 export default authSlice.reducer;
+
+function isError(action: UnknownAction) {
+  return action.type.endsWith("rejected");
+}

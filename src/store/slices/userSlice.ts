@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { BASE_URL } from "../authentication/authSlice";
+import { BASE_URL } from "./authSlice";
 
 export interface IExpense {
   id: string;

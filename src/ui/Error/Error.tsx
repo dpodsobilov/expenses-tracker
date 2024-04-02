@@ -7,8 +7,6 @@ import {
 import styles from "./Error.module.css";
 
 export default function Error() {
-  //   const error = useRouteError();
-  //   console.log(error);
   const navigate = useNavigate();
 
   const error = useRouteError() as Error;
