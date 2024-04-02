@@ -6,7 +6,7 @@ import { ruRU } from "@mui/x-date-pickers/locales";
 import { createTheme, ThemeProvider } from "@mui/material";
 
 import AppLayout from "./ui/AppLayout";
-import Error from "./ui/Error/Error";
+import Error from "./pages/Error";
 
 import { ProtectedRoute } from "./pages/ProtectedRoute";
 import { Login } from "./pages/Login";

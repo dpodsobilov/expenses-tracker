@@ -91,7 +91,7 @@ export const Register: FC = () => {
             required
             fullWidth
             name="password"
-            label="Пароль"
+            label="Пароль (от 4 до 12 символов)"
             type="password"
             id="password"
             autoComplete="current-password"

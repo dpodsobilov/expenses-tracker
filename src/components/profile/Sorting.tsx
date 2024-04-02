@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { FC, useCallback, useEffect, useState } from "react";
 import { IExpense } from "../../store/slices/userSlice";
-import useExpenses from "../../hooks/useExpenses";
 import { useSearchParams } from "react-router-dom";
 
 interface SortingProps {
@@ -21,13 +20,10 @@ export const Sorting: FC<SortingProps> = ({
   onSortList,
   expensesList,
 }) => {
-  const { expenses: initialExpenses } = useExpenses();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sortType, setSortType] = useState<string>(
     () => searchParams.get("sortBy") || "byDefault"
   );
-
-  // const sortBy = searchParams.get("sortBy") || "";
 
   const sortByDefault = useCallback(() => {
     const sortedExpenses = expensesList.slice().sort((a, b) => {
@@ -40,13 +36,12 @@ export const Sorting: FC<SortingProps> = ({
     onLoading(false);
   }, [expensesList, onLoading, onSortList]);
 
-  // useEffect(
-  //   function () {
-  //     onLoading(true);
-  //     sortByDefault();
-  //   },
-  //   [onLoading, sortByDefault]
-  // );
+  useEffect(
+    function () {
+      if (sortType === "byDefault") sortByDefault();
+    },
+    [sortByDefault, sortType]
+  );
 
   function handleSorting(e: SelectChangeEvent) {
     setSortType(e.target.value);

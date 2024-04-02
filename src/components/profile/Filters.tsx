@@ -1,6 +1,7 @@
+import React, { FC, useEffect, useState } from "react";
 import { Button, InputLabel, ListItem, Menu, TextField } from "@mui/material";
 import { ClearIcon, DatePicker } from "@mui/x-date-pickers";
-import React, { FC, useEffect, useState } from "react";
+
 import { IExpense } from "../../store/slices/userSlice";
 import useExpenses from "../../hooks/useExpenses";
 
@@ -23,6 +24,7 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
   useEffect(
     function () {
       if (startDate && endDate) {
+        onFilterList(initialExpenses);
         onFilterList((expenses) =>
           expenses.slice().filter((e) => {
             const date = new Date(e.date).getTime();
@@ -33,6 +35,19 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
       } else onFilterList(initialExpenses);
     },
     [endDate, initialExpenses, onFilterList, startDate]
+  );
+
+  useEffect(
+    function () {
+      onFilterList((expenses) => {
+        if (title) {
+          return expenses
+            .slice()
+            .filter((expense) => expense.title.toLowerCase().includes(title));
+        } else return expenses;
+      });
+    },
+    [onFilterList, title]
   );
 
   const handleOpenFilters = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,12 +70,6 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
       <Button variant="outlined" onClick={handleOpenFilters}>
         Фильтры
       </Button>
-      {/* фильтры 
-          1. период
-          2. описание
-          3. диапазон суммы
-          */}
-
       <Menu
         open={isFiltersOpen}
         anchorEl={anchorEl}
@@ -73,9 +82,8 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
             gap: 1,
           }}
         >
-          <InputLabel>Дата</InputLabel>
           <DatePicker
-            sx={{ width: "200px" }}
+            sx={{ width: "220px" }}
             value={startDate}
             maxDate={endDate || new Date()}
             onChange={(date) => {
@@ -84,7 +92,7 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
           />
           &mdash;
           <DatePicker
-            sx={{ width: "200px" }}
+            sx={{ width: "220px" }}
             value={endDate}
             minDate={startDate || new Date("1990")}
             maxDate={new Date()}
@@ -128,7 +136,6 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
         >
           <TextField
             margin="normal"
-            fullWidth
             type="number"
             InputProps={{ inputProps: { min: 0 } }}
             id="filter-min-amount"
@@ -139,7 +146,7 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
             value={minAmount}
             onChange={(e) => setMinAmount(+e.target.value)}
           />
-
+          &mdash;
           <TextField
             margin="normal"
             type="number"
@@ -152,7 +159,6 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
             value={maxAmount}
             onChange={(e) => setMaxAmount(+e.target.value)}
           />
-
           <ClearIcon sx={{ opacity: ".7" }} onClick={() => setTitle("")} />
         </ListItem>
       </Menu>
