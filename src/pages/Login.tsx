@@ -9,8 +9,16 @@ import { useInput } from "../hooks/form-hooks";
 import { IUser } from "../interfaces/user-interfaces";
 
 const Login: FC = () => {
-  const email = useInput("", { isEmpty: true, minLength: 6, isEmail: true });
-  const password = useInput("", { isEmpty: true, minLength: 4, maxLength: 12 });
+  const email = useInput("den@eden.ru", {
+    isEmpty: true,
+    minLength: 6,
+    isEmail: true,
+  });
+  const password = useInput("1234", {
+    isEmpty: true,
+    minLength: 4,
+    maxLength: 12,
+  });
 
   const dispatch = useAppDispatch();
   const { isAuth, error } = useAuth();
@@ -60,7 +68,7 @@ const Login: FC = () => {
             autoComplete="email"
             value={email.value}
             onChange={(e) => email.onChange(e)}
-            onBlur={(e) => email.onBlur(e)}
+            onBlur={() => email.onBlur()}
           />
           {email.isDirty &&
             (email.emailError || email.minLengthError || email.isEmpty) && (
@@ -80,7 +88,7 @@ const Login: FC = () => {
             autoComplete="current-password"
             value={password.value}
             onChange={(e) => password.onChange(e)}
-            onBlur={(e) => password.onBlur(e)}
+            onBlur={() => password.onBlur()}
           />
           {password.isDirty &&
             (password.minLengthError ||

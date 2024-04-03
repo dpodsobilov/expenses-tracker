@@ -16,10 +16,9 @@ import {
   IDateRange,
   SortType,
 } from "../interfaces/profile-interfaces";
+import { Charts } from "../components/profile/Charts";
 
 const Profile: FC = () => {
-  console.log("profile render");
-
   const dispatch = useAppDispatch();
   const { userId, userName } = useAuth();
   const { expenses } = useExpenses();
@@ -55,6 +54,35 @@ const Profile: FC = () => {
     [sortType]
   );
 
+  const filterExpenses = useCallback(
+    (exp: IExpense) => {
+      const dateExp = new Date(exp.date);
+      const isWithinDateRange =
+        (!dateRange.startDate ||
+          dateExp.getTime() >= dateRange.startDate.getTime()) &&
+        (!dateRange.endDate ||
+          dateExp.getTime() <= dateRange.endDate.getTime());
+
+      const isTitleMatch =
+        title !== ""
+          ? exp.title.toLowerCase().includes(title.toLowerCase())
+          : true;
+
+      const isWithinAmountRange =
+        (!amountRange.minAmount || exp.amount >= amountRange.minAmount) &&
+        (!amountRange.maxAmount || exp.amount <= amountRange.maxAmount);
+
+      return isWithinDateRange && isTitleMatch && isWithinAmountRange;
+    },
+    [
+      amountRange.maxAmount,
+      amountRange.minAmount,
+      dateRange.endDate,
+      dateRange.startDate,
+      title,
+    ]
+  );
+
   useEffect(
     function () {
       if (userId) {
@@ -68,41 +96,10 @@ const Profile: FC = () => {
   useEffect(
     function () {
       if (expenses) {
-        setExpensesList(
-          expenses
-            .filter((exp: IExpense) => {
-              const dateExp = new Date(exp.date);
-              const isWithinDateRange =
-                (!dateRange.startDate ||
-                  dateExp.getTime() >= dateRange.startDate.getTime()) &&
-                (!dateRange.endDate ||
-                  dateExp.getTime() <= dateRange.endDate.getTime());
-
-              const isTitleMatch =
-                title !== ""
-                  ? exp.title.toLowerCase().includes(title.toLowerCase())
-                  : true;
-
-              const isWithinAmountRange =
-                (!amountRange.minAmount ||
-                  exp.amount >= amountRange.minAmount) &&
-                (!amountRange.maxAmount || exp.amount <= amountRange.maxAmount);
-
-              return isWithinDateRange && isTitleMatch && isWithinAmountRange;
-            })
-            .sort(compareByDates)
-        );
+        setExpensesList(expenses.filter(filterExpenses).sort(compareByDates));
       }
     },
-    [
-      amountRange.maxAmount,
-      amountRange.minAmount,
-      dateRange.endDate,
-      dateRange.startDate,
-      expenses,
-      compareByDates,
-      title,
-    ]
+    [compareByDates, expenses, filterExpenses]
   );
 
   function handleCloseDialog() {
@@ -117,47 +114,57 @@ const Profile: FC = () => {
 
   return (
     <Box
-      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 10,
+      }}
     >
-      <Typography variant="h4" component="p">
-        Привет, {userName}!
-      </Typography>
-      <Box>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Sorting sortType={sortType} onSetSortType={setSortType} />
-            <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
-              Добавить расход
-            </Button>
-          </Box>
-          <Filters
-            dateRange={dateRange}
-            onSetDateRange={setDateRange}
-            title={title}
-            onSetTitle={setTitle}
-            amountRange={amountRange}
-            onSetAmountRange={setAmountRange}
-          />
-        </Box>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <Typography variant="h4" component="p">
+          Привет, {userName}!
+        </Typography>
         <Box>
-          {isLoading && "Загрузка..."}
-          {!isLoading && (
-            <List sx={{ width: 500 }}>
-              {expensesList.map((expense) => (
-                <ExpenseItem expense={expense} key={expense.id} />
-              ))}
-            </List>
-          )}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: 2,
+              }}
+            >
+              <Sorting sortType={sortType} onSetSortType={setSortType} />
+              <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
+                Добавить расход
+              </Button>
+            </Box>
+            <Filters
+              dateRange={dateRange}
+              onSetDateRange={setDateRange}
+              title={title}
+              onSetTitle={setTitle}
+              amountRange={amountRange}
+              onSetAmountRange={setAmountRange}
+            />
+          </Box>
+          <Box>
+            {isLoading && "Загрузка..."}
+            {!isLoading && (
+              <List sx={{ width: 500 }}>
+                {expensesList.map((expense) => (
+                  <ExpenseItem expense={expense} key={expense.id} />
+                ))}
+              </List>
+            )}
+          </Box>
         </Box>
+        <NewExpense isOpen={isDialogOpen} onClose={handleCloseDialog} />
       </Box>
-      <NewExpense isOpen={isDialogOpen} onClose={handleCloseDialog} />
+      {expensesList.length > 0 && <Charts expensesList={expensesList} />}
     </Box>
   );
 };

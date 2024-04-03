@@ -21,3 +21,8 @@ export interface IExpenseWithId {
   userId: string;
   expense: IExpense;
 }
+
+export interface IExpenseIdWithUserId {
+  userId: string;
+  expenseId: string;
+}

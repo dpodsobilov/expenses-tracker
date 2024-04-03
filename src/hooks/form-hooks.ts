@@ -19,8 +19,7 @@ export function useInput(
     setValue(e.target.value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function onBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function onBlur() {
     setIsDirty(true);
     dispatch(clearError());
   }
@@ -44,26 +43,32 @@ export function useValidation(
     function () {
       for (const validation in validations) {
         switch (validation) {
-          case "minLength":
-            if (typeof validations[validation] === "number")
-              if (value.length < validations[validation]) {
+          case "minLength": {
+            const length = validations[validation];
+            if (typeof length === "number") {
+              if (value.length < length) {
                 setMinLengthError(true);
                 setError(`Минимальная длина ${validations[validation]}`);
               } else {
                 setMinLengthError(false);
                 setError("");
               }
+            }
             break;
-          case "maxLength":
-            if (typeof validations[validation] === "number")
-              if (value.length > validations[validation]) {
+          }
+          case "maxLength": {
+            const length = validations[validation];
+            if (typeof length === "number") {
+              if (value.length > length) {
                 setMaxLengthError(true);
                 setError(`Максимальная длина ${validations[validation]}`);
               } else {
                 setMaxLengthError(false);
                 setError("");
               }
+            }
             break;
+          }
           case "isEmpty":
             if (value) {
               setIsEmpty(false);

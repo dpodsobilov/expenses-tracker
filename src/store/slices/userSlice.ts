@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "./authSlice";
 import {
   IExpense,
+  IExpenseIdWithUserId,
   IExpenseWithId,
   IUser,
   IUserExpense,
@@ -51,6 +52,26 @@ export const addExpense = createAsyncThunk<IExpense, IExpenseWithId>(
   }
 );
 
+export const deleteExpense = createAsyncThunk<string, IExpenseIdWithUserId>(
+  "user/deleteExpense",
+  async ({ userId, expenseId }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get<IUser>(`${BASE_URL}/users/${userId}`);
+      const { expenses } = data;
+
+      const newExpenses = expenses.filter((exp) => exp.id !== expenseId);
+
+      await axios.patch(`${BASE_URL}/users/${userId}`, {
+        expenses: newExpenses,
+      });
+
+      return expenseId;
+    } catch (err) {
+      throw rejectWithValue(err);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -71,6 +92,14 @@ const userSlice = createSlice({
         addExpense.fulfilled,
         (state, action: PayloadAction<IExpense>) => {
           state.expenses.push(action.payload);
+        }
+      )
+      .addCase(
+        deleteExpense.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.expenses = state.expenses.filter(
+            (exp) => exp.id !== action.payload
+          );
         }
       );
   },

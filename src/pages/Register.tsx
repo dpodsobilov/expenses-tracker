@@ -59,7 +59,7 @@ const Register: FC = () => {
             name="name"
             value={name.value}
             onChange={(e) => name.onChange(e)}
-            onBlur={(e) => name.onBlur(e)}
+            onBlur={() => name.onBlur()}
           />
           {name.isDirty && (name.minLengthError || name.isEmpty) && (
             <Typography variant="subtitle1" color="red">
@@ -77,7 +77,7 @@ const Register: FC = () => {
             autoComplete="email"
             value={email.value}
             onChange={(e) => email.onChange(e)}
-            onBlur={(e) => email.onBlur(e)}
+            onBlur={() => email.onBlur()}
           />
           {email.isDirty &&
             (email.emailError || email.minLengthError || email.isEmpty) && (
@@ -97,7 +97,7 @@ const Register: FC = () => {
             autoComplete="current-password"
             value={password.value}
             onChange={(e) => password.onChange(e)}
-            onBlur={(e) => password.onBlur(e)}
+            onBlur={() => password.onBlur()}
           />
           {password.isDirty &&
             (password.minLengthError ||
