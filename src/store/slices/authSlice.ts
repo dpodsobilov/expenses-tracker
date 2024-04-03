@@ -52,9 +52,9 @@ export const register = createAsyncThunk<IUserAuth, IUser>(
   }
 );
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<IUserAuth, IUser>(
   "auth/login",
-  async (userData: IUser, { rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
       const { data } = await axios.get<IUser[]>(`${BASE_URL}/users`);
 
@@ -68,7 +68,7 @@ export const login = createAsyncThunk(
 
       const { id, name, email, password } = user;
 
-      return { id, name, email, password };
+      return { id, name, email, password } as IUserAuth;
     } catch (err) {
       throw rejectWithValue(err);
     }
@@ -98,7 +98,7 @@ const authSlice = createSlice({
         (state, action: PayloadAction<IUserAuth>) => {
           state.isLoading = false;
           state.isAuth = true;
-          state.currentUser = { ...action.payload };
+          state.currentUser = action.payload;
           state.error = "";
         }
       )
@@ -112,7 +112,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action: PayloadAction<IUserAuth>) => {
         state.isLoading = false;
         state.isAuth = true;
-        state.currentUser = { ...action.payload };
+        state.currentUser = action.payload;
         state.error = "";
       })
       .addCase(login.rejected, (state) => {

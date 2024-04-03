@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import {
   Box,
   Button,
@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { addExpense } from "../../store/slices/userSlice";
-import { useAppDispatch } from "../../hooks/hook";
+import { useAppDispatch } from "../../hooks/redux-hooks";
 import useAuth from "../../hooks/useAuth";
 import { IExpense } from "../../interfaces/user-interfaces";
 

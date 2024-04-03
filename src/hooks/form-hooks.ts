@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "./hook";
+import { useAppDispatch } from "./redux-hooks";
 import { clearError } from "../store/slices/authSlice";
 
 type ValueType = string;

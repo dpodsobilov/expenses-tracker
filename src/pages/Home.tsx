@@ -4,7 +4,7 @@ import { Box, Typography } from "@mui/material";
 
 import useAuth from "../hooks/useAuth";
 
-export const Home: FC = () => {
+const Home: FC = () => {
   const { isAuth } = useAuth();
 
   return (
@@ -20,3 +20,5 @@ export const Home: FC = () => {
     </Box>
   );
 };
+
+export default Home;

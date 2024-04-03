@@ -1,13 +1,13 @@
 import { FC, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../hooks/hook";
+import { useAppDispatch } from "../hooks/redux-hooks";
 import { register } from "../store/slices/authSlice";
 import useAuth from "../hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useInput } from "../hooks/formHooks";
+import { useInput } from "../hooks/form-hooks";
 import { IUser } from "../interfaces/user-interfaces";
 
-export const Register: FC = () => {
+const Register: FC = () => {
   const name = useInput("", { isEmpty: true, minLength: 3 });
   const email = useInput("", { isEmpty: true, minLength: 6, isEmail: true });
   const password = useInput("", { isEmpty: true, minLength: 4, maxLength: 12 });
@@ -133,3 +133,5 @@ export const Register: FC = () => {
     </Container>
   );
 };
+
+export default Register;

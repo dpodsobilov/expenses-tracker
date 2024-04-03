@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { Box, Button, List, Typography } from "@mui/material";
 
 import { getExpenses } from "../store/slices/userSlice";
-import { useAppDispatch } from "../hooks/hook";
+import { useAppDispatch } from "../hooks/redux-hooks";
 import useAuth from "../hooks/useAuth";
 import useExpenses from "../hooks/useExpenses";
 
@@ -17,21 +17,18 @@ import {
   SortType,
 } from "../interfaces/profile-interfaces";
 
-export const Profile: FC = () => {
+const Profile: FC = () => {
   console.log("profile render");
 
   const dispatch = useAppDispatch();
   const { userId, userName } = useAuth();
   const { expenses } = useExpenses();
 
-  const [expansesList, setExpansesList] = useState<IExpense[]>([]);
+  const [expensesList, setExpensesList] = useState<IExpense[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
-  const maxAmount = expenses.reduce((max, cur) =>
-    max.amount > cur.amount ? max : cur
-  ).amount;
   const [dateRange, setDateRange] = useState<IDateRange>({
     startDate: null,
     endDate: new Date(),
@@ -39,61 +36,84 @@ export const Profile: FC = () => {
   const [title, setTitle] = useState<string>("");
   const [amountRange, setAmountRange] = useState<IAmountRange>({
     minAmount: 0,
-    maxAmount: maxAmount,
+    maxAmount: null,
   });
+
   const [sortType, setSortType] = useState<SortType>("byDefault");
 
-  function sortByDates(a: IExpense, b: IExpense) {
-    switch (sortType) {
-      case "byDefault":
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      case "byAsc":
-        return a.amount - b.amount;
-      case "byDesc":
-        return b.amount - a.amount;
-    }
-  }
-
-  const displayedExpenses = expansesList
-    .filter((exp) => {
-      const dateExp = new Date(exp.date);
-      if (dateRange.startDate)
-        return dateExp.getTime() >= dateRange.startDate.getTime();
-      else return exp;
-    })
-    .filter((exp) => {
-      const dateExp = new Date(exp.date);
-      if (dateRange.endDate)
-        return dateExp.getTime() <= dateRange.endDate.getTime();
-      else return exp;
-    })
-    .filter((exp) => {
-      if (title !== "") return exp.title.toLowerCase().includes(title);
-      else return exp;
-    })
-    .filter((exp) => {
-      if (amountRange.minAmount) return exp.amount >= amountRange.minAmount;
-      else return exp;
-    })
-    .filter((exp) => {
-      if (amountRange.maxAmount) return exp.amount <= amountRange.maxAmount;
-      else return exp;
-    })
-    .sort(sortByDates);
+  const compareByDates = useCallback(
+    (a: IExpense, b: IExpense) => {
+      switch (sortType) {
+        case "byDefault":
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "byAsc":
+          return a.amount - b.amount;
+        case "byDesc":
+          return b.amount - a.amount;
+      }
+    },
+    [sortType]
+  );
 
   useEffect(
     function () {
-      if (userId) dispatch(getExpenses(userId));
+      if (userId) {
+        setIsLoading(true);
+        dispatch(getExpenses(userId)).then(() => setIsLoading(false));
+      }
     },
     [dispatch, userId]
   );
 
   useEffect(
     function () {
-      if (expenses) setExpansesList(expenses);
+      if (expenses) {
+        setExpensesList(
+          expenses
+            .filter((exp: IExpense) => {
+              const dateExp = new Date(exp.date);
+              const isWithinDateRange =
+                (!dateRange.startDate ||
+                  dateExp.getTime() >= dateRange.startDate.getTime()) &&
+                (!dateRange.endDate ||
+                  dateExp.getTime() <= dateRange.endDate.getTime());
+
+              const isTitleMatch =
+                title !== ""
+                  ? exp.title.toLowerCase().includes(title.toLowerCase())
+                  : true;
+
+              const isWithinAmountRange =
+                (!amountRange.minAmount ||
+                  exp.amount >= amountRange.minAmount) &&
+                (!amountRange.maxAmount || exp.amount <= amountRange.maxAmount);
+
+              return isWithinDateRange && isTitleMatch && isWithinAmountRange;
+            })
+            .sort(compareByDates)
+        );
+      }
     },
-    [expenses]
+    [
+      amountRange.maxAmount,
+      amountRange.minAmount,
+      dateRange.endDate,
+      dateRange.startDate,
+      expenses,
+      compareByDates,
+      title,
+    ]
   );
+
+  function handleCloseDialog() {
+    setIsDialogOpen(false);
+    setDateRange((prev) => {
+      return {
+        ...prev,
+        endDate: new Date(),
+      };
+    });
+  }
 
   return (
     <Box
@@ -112,11 +132,7 @@ export const Profile: FC = () => {
               mt: 2,
             }}
           >
-            {/* <Sorting
-              onLoading={setIsLoading}
-              expensesList={expansesList}
-              onSortList={setExpansesList}
-            /> */}
+            <Sorting sortType={sortType} onSetSortType={setSortType} />
             <Button variant="contained" onClick={() => setIsDialogOpen(true)}>
               Добавить расход
             </Button>
@@ -134,17 +150,16 @@ export const Profile: FC = () => {
           {isLoading && "Загрузка..."}
           {!isLoading && (
             <List sx={{ width: 500 }}>
-              {displayedExpenses.map((expense) => (
+              {expensesList.map((expense) => (
                 <ExpenseItem expense={expense} key={expense.id} />
               ))}
             </List>
           )}
         </Box>
       </Box>
-      <NewExpense
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-      />
+      <NewExpense isOpen={isDialogOpen} onClose={handleCloseDialog} />
     </Box>
   );
 };
+
+export default Profile;

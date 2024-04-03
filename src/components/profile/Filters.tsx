@@ -24,46 +24,15 @@ export const Filters: FC<FiltersProps> = ({
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // const { expenses: initialExpenses } = useExpenses();
-
-  // const [endDate, setEndDate] = useState<Date | null>(new Date());
-  // const [title, setTitle] = useState<string>("");
-  // const [minAmount, setMinAmount] = useState<number>(0);
-  // const [maxAmount, setMaxAmount] = useState<number | null>(null);
-
-  // useEffect(
-  //   function () {
-  //     if (startDate && endDate) {
-  //       onFilterList(initialExpenses);
-  //       onFilterList((expenses) =>
-  //         expenses.slice().filter((e) => {
-  //           const date = new Date(e.date).getTime();
-
-  //           return date >= startDate.getTime() && date <= endDate.getTime();
-  //         })
-  //       );
-  //     } else onFilterList(initialExpenses);
-  //   },
-  //   [endDate, initialExpenses, onFilterList, startDate]
-  // );
-
-  // useEffect(
-  //   function () {
-  //     onFilterList((expenses) => {
-  //       if (title) {
-  //         return expenses
-  //           .slice()
-  //           .filter((expense) => expense.title.toLowerCase().includes(title));
-  //       } else return expenses;
-  //     });
-  //   },
-  //   [onFilterList, title]
-  // );
-
   const handleOpenFilters = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setIsFiltersOpen(true);
   };
+
+  function handleCloseFilters() {
+    setAnchorEl(null);
+    setIsFiltersOpen(false);
+  }
 
   function handleSetStartDate(date: Date | null) {
     if (date) {
@@ -103,11 +72,6 @@ export const Filters: FC<FiltersProps> = ({
         return { ...prev, maxAmount: +max };
       });
     }
-  }
-
-  function handleCloseFilters() {
-    setAnchorEl(null);
-    setIsFiltersOpen(false);
   }
 
   function handleClearDates() {

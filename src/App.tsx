@@ -9,10 +9,12 @@ import AppLayout from "./ui/AppLayout";
 import Error from "./pages/Error";
 
 import { ProtectedRoute } from "./pages/ProtectedRoute";
-import { Login } from "./pages/Login";
-import { Profile } from "./pages/Profile";
-import { Home } from "./pages/Home";
-import { Register } from "./pages/Register";
+import { lazy } from "react";
+
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const Home = lazy(() => import("./pages/Home"));
+const Profile = lazy(() => import("./pages/Profile"));
 
 const theme = createTheme({}, ruRU);
 

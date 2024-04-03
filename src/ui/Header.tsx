@@ -2,7 +2,7 @@ import { AppBar, Container, Typography } from "@mui/material";
 import { FC } from "react";
 import useAuth from "../hooks/useAuth";
 import { Link, useLocation } from "react-router-dom";
-import { useAppDispatch } from "../hooks/hook";
+import { useAppDispatch } from "../hooks/redux-hooks";
 import { clearExpenses } from "../store/slices/userSlice";
 import { logout } from "../store/slices/authSlice";
 import { LinkStyled } from "./LinkStyled";

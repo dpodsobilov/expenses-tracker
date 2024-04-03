@@ -1,14 +1,14 @@
 import { FC, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../hooks/hook";
+import { useAppDispatch } from "../hooks/redux-hooks";
 import { login } from "../store/slices/authSlice";
 import useAuth from "../hooks/useAuth";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useInput } from "../hooks/formHooks";
+import { useInput } from "../hooks/form-hooks";
 import { IUser } from "../interfaces/user-interfaces";
 
-export const Login: FC = () => {
+const Login: FC = () => {
   const email = useInput("", { isEmpty: true, minLength: 6, isEmail: true });
   const password = useInput("", { isEmpty: true, minLength: 4, maxLength: 12 });
 
@@ -113,3 +113,5 @@ export const Login: FC = () => {
     </Container>
   );
 };
+
+export default Login;
