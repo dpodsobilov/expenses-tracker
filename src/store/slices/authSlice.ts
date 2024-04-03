@@ -4,24 +4,11 @@ import {
   PayloadAction,
   UnknownAction,
 } from "@reduxjs/toolkit";
-import { IUser } from "./userSlice";
 import axios from "axios";
+import { IAuth, IAuthError, IUserAuth } from "../../interfaces/auth-interfaces";
+import { IUser } from "../../interfaces/user-interfaces";
 
 export const BASE_URL: string = "http://localhost:9000";
-
-interface IAuth {
-  currentUser: IUserAuth | null;
-  isAuth: boolean;
-  isLoading: boolean;
-  error: string;
-}
-
-export interface IUserAuth {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-}
 
 const initialState: IAuth = {
   currentUser: null,
@@ -29,10 +16,6 @@ const initialState: IAuth = {
   isLoading: false,
   error: "",
 };
-
-interface IAuthError {
-  message: string;
-}
 
 export const register = createAsyncThunk<IUserAuth, IUser>(
   "auth/register",

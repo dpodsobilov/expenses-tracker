@@ -2,10 +2,10 @@ import { FC, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hook";
 import { register } from "../store/slices/authSlice";
-import { IUser } from "../store/slices/userSlice";
 import useAuth from "../hooks/useAuth";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useInput } from "../hooks/formHooks";
+import { IUser } from "../interfaces/user-interfaces";
 
 export const Register: FC = () => {
   const name = useInput("", { isEmpty: true, minLength: 3 });

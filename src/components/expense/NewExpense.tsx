@@ -8,9 +8,10 @@ import {
   TextField,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import { addExpense, IExpense } from "../../store/slices/userSlice";
+import { addExpense } from "../../store/slices/userSlice";
 import { useAppDispatch } from "../../hooks/hook";
 import useAuth from "../../hooks/useAuth";
+import { IExpense } from "../../interfaces/user-interfaces";
 
 interface NewExpenseProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ interface NewExpenseProps {
 export const NewExpense: FC<NewExpenseProps> = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState<string>("");
   const [date, setDate] = useState<Date>(new Date());
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number | null>(0);
 
   const { userId } = useAuth();
   const dispatch = useAppDispatch();
@@ -29,17 +30,24 @@ export const NewExpense: FC<NewExpenseProps> = ({ isOpen, onClose }) => {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const expense: IExpense = {
       id: "",
       title,
       date: date.toISOString(),
-      amount,
+      amount: 0,
     };
+    if (amount) expense.amount = amount;
     if (userId) dispatch(addExpense({ userId, expense }));
     onClose(true);
     setTitle("");
     setDate(new Date());
     setAmount(0);
+  }
+
+  function handleSetAmount(amount: string) {
+    if (amount === "") setAmount(null);
+    else setAmount(+amount);
   }
 
   return (
@@ -88,7 +96,7 @@ export const NewExpense: FC<NewExpenseProps> = ({ isOpen, onClose }) => {
               id="amount"
               InputProps={{ inputProps: { min: 0 } }}
               value={amount}
-              onChange={(e) => setAmount(+e.target.value)}
+              onChange={(e) => handleSetAmount(e.target.value)}
             />
 
             <Button type="submit" variant="contained" sx={{ mb: 2 }}>

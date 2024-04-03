@@ -1,30 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { BASE_URL } from "./authSlice";
-
-export interface IExpense {
-  id: string;
-  title: string;
-  date: string;
-  amount: number;
-}
-
-export interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  expenses: IExpense[];
-}
-
-export interface IUserExpense {
-  expenses: IExpense[];
-}
-
-export interface IExpenseWithId {
-  userId: string;
-  expense: IExpense;
-}
+import {
+  IExpense,
+  IExpenseWithId,
+  IUser,
+  IUserExpense,
+} from "../../interfaces/user-interfaces";
 
 const initialState: IUserExpense = {
   expenses: [],

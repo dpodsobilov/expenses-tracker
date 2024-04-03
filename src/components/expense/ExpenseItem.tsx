@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { ListItem, ListItemText, Typography } from "@mui/material";
-import { IExpense } from "../../store/slices/userSlice";
 import { formatDate } from "../../utils/formatDate";
 import { formatAmount } from "../../utils/formatAmount";
+import { IExpense } from "../../interfaces/user-interfaces";
 
 interface ExpenseItemProps {
   expense: IExpense;

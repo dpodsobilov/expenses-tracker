@@ -6,8 +6,8 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { FC, useCallback, useEffect, useState } from "react";
-import { IExpense } from "../../store/slices/userSlice";
 import { useSearchParams } from "react-router-dom";
+import { IExpense } from "../../interfaces/user-interfaces";
 
 interface SortingProps {
   onSortList: React.Dispatch<React.SetStateAction<IExpense[]>>;

@@ -1,12 +1,12 @@
 import { FC, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../hooks/hook";
-import { IUser } from "../store/slices/userSlice";
 import { login } from "../store/slices/authSlice";
 import useAuth from "../hooks/useAuth";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useInput } from "../hooks/formHooks";
+import { IUser } from "../interfaces/user-interfaces";
 
 export const Login: FC = () => {
   const email = useInput("", { isEmpty: true, minLength: 6, isEmail: true });

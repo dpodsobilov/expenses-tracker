@@ -1,68 +1,121 @@
-import React, { FC, useEffect, useState } from "react";
-import { Button, InputLabel, ListItem, Menu, TextField } from "@mui/material";
+import { FC, useState } from "react";
+import { Button, ListItem, Menu, TextField } from "@mui/material";
 import { ClearIcon, DatePicker } from "@mui/x-date-pickers";
 
-import { IExpense } from "../../store/slices/userSlice";
-import useExpenses from "../../hooks/useExpenses";
+import { IAmountRange, IDateRange } from "../../interfaces/profile-interfaces";
 
 interface FiltersProps {
-  onFilterList: React.Dispatch<React.SetStateAction<IExpense[]>>;
+  dateRange: IDateRange;
+  onSetDateRange: React.Dispatch<React.SetStateAction<IDateRange>>;
+  title: string;
+  onSetTitle: React.Dispatch<React.SetStateAction<string>>;
+  amountRange: IAmountRange;
+  onSetAmountRange: React.Dispatch<React.SetStateAction<IAmountRange>>;
 }
 
-export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
+export const Filters: FC<FiltersProps> = ({
+  dateRange,
+  onSetDateRange,
+  title,
+  onSetTitle,
+  amountRange,
+  onSetAmountRange,
+}) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const { expenses: initialExpenses } = useExpenses();
+  // const { expenses: initialExpenses } = useExpenses();
 
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-  const [title, setTitle] = useState<string>("");
-  const [minAmount, setMinAmount] = useState<number>(0);
-  const [maxAmount, setMaxAmount] = useState<number | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(new Date());
+  // const [title, setTitle] = useState<string>("");
+  // const [minAmount, setMinAmount] = useState<number>(0);
+  // const [maxAmount, setMaxAmount] = useState<number | null>(null);
 
-  useEffect(
-    function () {
-      if (startDate && endDate) {
-        onFilterList(initialExpenses);
-        onFilterList((expenses) =>
-          expenses.slice().filter((e) => {
-            const date = new Date(e.date).getTime();
+  // useEffect(
+  //   function () {
+  //     if (startDate && endDate) {
+  //       onFilterList(initialExpenses);
+  //       onFilterList((expenses) =>
+  //         expenses.slice().filter((e) => {
+  //           const date = new Date(e.date).getTime();
 
-            return date >= startDate.getTime() && date <= endDate.getTime();
-          })
-        );
-      } else onFilterList(initialExpenses);
-    },
-    [endDate, initialExpenses, onFilterList, startDate]
-  );
+  //           return date >= startDate.getTime() && date <= endDate.getTime();
+  //         })
+  //       );
+  //     } else onFilterList(initialExpenses);
+  //   },
+  //   [endDate, initialExpenses, onFilterList, startDate]
+  // );
 
-  useEffect(
-    function () {
-      onFilterList((expenses) => {
-        if (title) {
-          return expenses
-            .slice()
-            .filter((expense) => expense.title.toLowerCase().includes(title));
-        } else return expenses;
-      });
-    },
-    [onFilterList, title]
-  );
+  // useEffect(
+  //   function () {
+  //     onFilterList((expenses) => {
+  //       if (title) {
+  //         return expenses
+  //           .slice()
+  //           .filter((expense) => expense.title.toLowerCase().includes(title));
+  //       } else return expenses;
+  //     });
+  //   },
+  //   [onFilterList, title]
+  // );
 
   const handleOpenFilters = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setIsFiltersOpen(true);
   };
 
-  const handleCloseFilters = () => {
+  function handleSetStartDate(date: Date | null) {
+    if (date) {
+      onSetDateRange((prev) => {
+        return { ...prev, startDate: date };
+      });
+    }
+  }
+
+  function handleSetEndDate(date: Date | null) {
+    if (date) {
+      onSetDateRange((prev) => {
+        return { ...prev, endDate: date };
+      });
+    }
+  }
+
+  function handleSetMinAmount(min: string) {
+    if (min === "") {
+      onSetAmountRange((prev) => {
+        return { ...prev, minAmount: null };
+      });
+    } else {
+      onSetAmountRange((prev) => {
+        return { ...prev, minAmount: +min };
+      });
+    }
+  }
+
+  function handleSetMaxAmount(max: string) {
+    if (max === "") {
+      onSetAmountRange((prev) => {
+        return { ...prev, maxAmount: null };
+      });
+    } else {
+      onSetAmountRange((prev) => {
+        return { ...prev, maxAmount: +max };
+      });
+    }
+  }
+
+  function handleCloseFilters() {
     setAnchorEl(null);
     setIsFiltersOpen(false);
-  };
+  }
 
   function handleClearDates() {
-    setStartDate(null);
-    setEndDate(null);
+    onSetDateRange({ startDate: null, endDate: null });
+  }
+
+  function handleClearAmountRange() {
+    onSetAmountRange({ minAmount: null, maxAmount: null });
   }
 
   return (
@@ -84,21 +137,17 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
         >
           <DatePicker
             sx={{ width: "220px" }}
-            value={startDate}
-            maxDate={endDate || new Date()}
-            onChange={(date) => {
-              if (date) setStartDate(date);
-            }}
+            value={dateRange.startDate}
+            maxDate={dateRange.endDate || new Date()}
+            onChange={(date) => handleSetStartDate(date)}
           />
           &mdash;
           <DatePicker
             sx={{ width: "220px" }}
-            value={endDate}
-            minDate={startDate || new Date("1990")}
+            value={dateRange.endDate}
+            minDate={dateRange.startDate || new Date("1990")}
             maxDate={new Date()}
-            onChange={(date) => {
-              if (date) setEndDate(date);
-            }}
+            onChange={(date) => handleSetEndDate(date)}
           />
           <ClearIcon sx={{ opacity: ".7" }} onClick={handleClearDates} />
         </ListItem>
@@ -120,10 +169,10 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
             size="small"
             sx={{ m: 0 }}
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => onSetTitle(e.target.value)}
           />
 
-          <ClearIcon sx={{ opacity: ".7" }} onClick={() => setTitle("")} />
+          <ClearIcon sx={{ opacity: ".7" }} onClick={() => onSetTitle("")} />
         </ListItem>
 
         <ListItem
@@ -143,23 +192,23 @@ export const Filters: FC<FiltersProps> = ({ onFilterList }) => {
             name="filter-min-amount"
             size="small"
             sx={{ m: 0 }}
-            value={minAmount}
-            onChange={(e) => setMinAmount(+e.target.value)}
+            value={amountRange.minAmount}
+            onChange={(e) => handleSetMinAmount(e.target.value)}
           />
           &mdash;
           <TextField
             margin="normal"
             type="number"
-            InputProps={{ inputProps: { min: `${minAmount}` } }}
+            InputProps={{ inputProps: { min: `${amountRange.minAmount}` } }}
             id="filter-max-amount"
             label="До"
             name="filter-max-amount"
             size="small"
             sx={{ m: 0 }}
-            value={maxAmount}
-            onChange={(e) => setMaxAmount(+e.target.value)}
+            value={amountRange.maxAmount}
+            onChange={(e) => handleSetMaxAmount(e.target.value)}
           />
-          <ClearIcon sx={{ opacity: ".7" }} onClick={() => setTitle("")} />
+          <ClearIcon sx={{ opacity: ".7" }} onClick={handleClearAmountRange} />
         </ListItem>
       </Menu>
     </>
