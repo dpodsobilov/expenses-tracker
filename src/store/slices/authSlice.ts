@@ -8,7 +8,7 @@ import axios from "axios";
 import { IAuth, IAuthError, IUserAuth } from "../../interfaces/auth-interfaces";
 import { IUser } from "../../interfaces/user-interfaces";
 
-export const BASE_URL: string = "http://localhost:9000";
+export const BASE_URL: string = import.meta.env.VITE_API_URL;
 
 const initialState: IAuth = {
   currentUser: null,
